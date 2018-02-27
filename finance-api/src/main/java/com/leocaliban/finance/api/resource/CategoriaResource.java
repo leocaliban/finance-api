@@ -68,7 +68,18 @@ public class CategoriaResource {
 	 * @return Categoria
 	 */
 	@GetMapping("/{codigo}") //indica o mapeamento GET para o caminho /categorias/{codigo} 
-	public Categoria buscarPorCodigo(@PathVariable Long codigo) {
-		return repository.findOne(codigo);
+	public ResponseEntity<Categoria> buscarPorCodigo(@PathVariable Long codigo, HttpServletResponse response) {
+		Categoria categoriaRecuperada = repository.findOne(codigo);
+		
+		if(categoriaRecuperada != null) {
+			//Montando a URI da requisição atual
+			URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri()
+					.buildAndExpand(categoriaRecuperada.getCodigo()).toUri();
+			response.setHeader("Location", uri.toASCIIString());
+			return ResponseEntity.ok().body(categoriaRecuperada);
+		}
+		else {
+			return ResponseEntity.notFound().build();
+		}
 	}
 }
