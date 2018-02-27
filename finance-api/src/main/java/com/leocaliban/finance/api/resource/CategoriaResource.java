@@ -62,9 +62,11 @@ public class CategoriaResource {
 			
 	}
 	
+
 	/**
 	 * Busca uma categoria no banco de dados pelo código através do repository
 	 * @param codigo código da categoria, o valor será atribuido pelo @PathVariable que por sua vez recupera o valor do @GetMapping
+	 * @param response variavel de resposta para o http
 	 * @return Categoria
 	 */
 	@GetMapping("/{codigo}") //indica o mapeamento GET para o caminho /categorias/{codigo} 
