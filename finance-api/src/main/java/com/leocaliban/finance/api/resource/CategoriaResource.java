@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,8 +41,12 @@ public class CategoriaResource {
 		
 	}
 	
+
 	/**
 	 * Salva categorias no banco de dados através do repository
+	 * @param categoria recurso recuperado do corpo da requisição
+	 * @param response variavel de resposta para o http
+	 * @return retorna o conteudo do objeto em json com um created 201, substituindo a anotação @ResponseStatus que só retorna o status
 	 */
 	@PostMapping //indica o mapeamento POST padrão para /categorias
 	//@ResponseStatus(HttpStatus.CREATED) ao terminar a execução do método será retornado como resposta um 201 created
@@ -53,8 +58,17 @@ public class CategoriaResource {
 				.buildAndExpand(categoriaSalva.getCodigo()).toUri();
 		//Criando o Header de retorno, indicando onde o recurso pode ser acessado (REST)
 		response.setHeader("Location", uri.toASCIIString());
-		//retorna o conteudo do objeto em json com um created 201, substituindo a anotação @ResponseStatus que só retorna o status
 		return ResponseEntity.created(uri).body(categoriaSalva);
 			
+	}
+	
+	/**
+	 * Busca uma categoria no banco de dados pelo código através do repository
+	 * @param codigo código da categoria, o valor será atribuido pelo @PathVariable que por sua vez recupera o valor do @GetMapping
+	 * @return Categoria
+	 */
+	@GetMapping("/{codigo}") //indica o mapeamento GET para o caminho /categorias/{codigo} 
+	public Categoria buscarPorCodigo(@PathVariable Long codigo) {
+		return repository.findOne(codigo);
 	}
 }
