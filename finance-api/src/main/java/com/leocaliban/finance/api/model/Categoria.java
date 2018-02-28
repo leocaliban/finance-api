@@ -5,6 +5,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  * Classe {@link Categoria} que representa uma categoria
@@ -20,6 +22,8 @@ public class Categoria {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long codigo;
 	
+	@NotNull
+	@Size(min = 3, max = 30)
 	private String nome;
 
 	/**
@@ -42,7 +46,6 @@ public class Categoria {
 	 * Método que retorna o Nome da categoria
 	 * @return nome da categoria
 	 */
-
 	public String getNome() {
 		return nome;
 	}

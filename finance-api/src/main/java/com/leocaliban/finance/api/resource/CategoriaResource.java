@@ -4,6 +4,7 @@ import java.net.URI;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -46,11 +47,11 @@ public class CategoriaResource {
 	 * Salva categorias no banco de dados através do repository
 	 * @param categoria recurso recuperado do corpo da requisição
 	 * @param response variavel de resposta para o http
-	 * @return retorna o conteudo do objeto em json com um created 201, substituindo a anotação @ResponseStatus que só retorna o status
+	 * @return retorna o conteudo do objeto em json com um created 201, 
+	 * substituindo a anotação @ResponseStatus que só retorna o status
 	 */
 	@PostMapping //indica o mapeamento POST padrão para /categorias
-	//@ResponseStatus(HttpStatus.CREATED) ao terminar a execução do método será retornado como resposta um 201 created
-	public ResponseEntity<Categoria> salvar(@RequestBody Categoria categoria, HttpServletResponse response) {
+	public ResponseEntity<Categoria> salvar(@Valid @RequestBody Categoria categoria, HttpServletResponse response) {
 		Categoria categoriaSalva = repository.save(categoria);
 		
 		//Montando a URI da requisição atual
@@ -61,8 +62,8 @@ public class CategoriaResource {
 		return ResponseEntity.created(uri).body(categoriaSalva);
 			
 	}
-	
 
+	
 	/**
 	 * Busca uma categoria no banco de dados pelo código através do repository
 	 * @param codigo código da categoria, o valor será atribuido pelo @PathVariable que por sua vez recupera o valor do @GetMapping
