@@ -1,12 +1,13 @@
 package com.leocaliban.finance.api.resource;
 
-import java.net.URI;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,8 +15,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.leocaliban.finance.api.event.RecursoCriadoEvent;
 import com.leocaliban.finance.api.model.Pessoa;
 import com.leocaliban.finance.api.repository.PessoaRepository;
 
@@ -31,6 +32,9 @@ public class PessoaResource {
 	
 	@Autowired
 	private PessoaRepository repository;
+	
+	@Autowired
+	private ApplicationEventPublisher publisher;
 	
 	/**
 	 * Busca todas as pessoas do banco de dados através do repository
@@ -51,12 +55,11 @@ public class PessoaResource {
 	@PostMapping //indica o mapeamento POST padrão para /pessoas
 	public ResponseEntity<Pessoa> salvar(@Valid @RequestBody Pessoa pessoa, HttpServletResponse response){
 		Pessoa pessoaSalva = repository.save(pessoa);
-		//Montando a URI da requisição atual
-		URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{codigo}")
-				.buildAndExpand(pessoaSalva.getCodigo()).toUri();
-		//Criando o Header de retorno, indicando onde o recurso pode ser acessado (REST)
-		response.setHeader("Location", uri.toASCIIString());
-		return ResponseEntity.created(uri).body(pessoaSalva);
+
+		//publica o evento ao ser acionado, this referencia a classe que está disparando o evento
+		publisher.publishEvent(new RecursoCriadoEvent(this, response, pessoaSalva.getCodigo()));
+		
+		return ResponseEntity.status(HttpStatus.CREATED).body(pessoaSalva);
 	}
 	
 	/**
@@ -69,6 +72,5 @@ public class PessoaResource {
 		Pessoa pessoa = repository.findOne(codigo);
 		return pessoa != null ? ResponseEntity.ok(pessoa) : ResponseEntity.notFound().build();
 	}
-	
 	
 }
