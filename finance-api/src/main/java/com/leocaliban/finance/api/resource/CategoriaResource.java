@@ -39,7 +39,6 @@ public class CategoriaResource {
 	@GetMapping //indica o mapeamento GET padrão para /categorias (raiz)
 	public List<Categoria> listar(){
 		return repository.findAll();
-		
 	}
 	
 
