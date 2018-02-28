@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.leocaliban.finance.api.event.RecursoCriadoEvent;
 import com.leocaliban.finance.api.model.Pessoa;
 import com.leocaliban.finance.api.repository.PessoaRepository;
+import com.leocaliban.finance.api.service.PessoaService;
 
 /**
  * Classe que expõe todos os recursos relacionados a Pessoa (Controlador)
@@ -37,6 +39,9 @@ public class PessoaResource {
 	
 	@Autowired
 	private ApplicationEventPublisher publisher;
+	
+	@Autowired
+	private PessoaService service;
 	
 	/**
 	 * Busca todas as pessoas do banco de dados através do repository
@@ -84,5 +89,16 @@ public class PessoaResource {
 	public void remover(@PathVariable Long codigo) {
 		repository.delete(codigo);
 	}
-		
+	
+	/**
+	 * Edita uma pessoa do banco de dados pelo código através do service
+	 * @param codigo código da pessoa, o valor será atribuido pelo @PathVariable que por sua vez recupera o valor do @PutMapping
+	 * @param pessoa entidade Pessoa recuperada da requisição
+	 * @return Pessoa que foi editada
+	 */
+	@PutMapping("/{codigo}") //indica o mapeamento PUT para atualizar o recurso no caminho /pessoas/{codigo} 
+	public ResponseEntity<Pessoa> editar(@PathVariable Long codigo, @Valid @RequestBody Pessoa pessoa){
+		Pessoa pessoaSalva = service.editar(codigo, pessoa);
+		return ResponseEntity.ok(pessoaSalva);
+	}	
 }
