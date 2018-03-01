@@ -25,7 +25,7 @@ import com.leocaliban.finance.api.repository.PessoaRepository;
 import com.leocaliban.finance.api.service.PessoaService;
 
 /**
- * Classe que expõe todos os recursos relacionados a Pessoa (Controlador)
+ * Classe {@link PessoaResource} que expõe todos os recursos relacionados a Pessoa (Controlador)
  * @author Leocaliban
  *
  * 28 de fev de 2018
