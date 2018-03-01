@@ -53,7 +53,7 @@ public class PessoaResource {
 	}
 	
 	/**
-	 * Salva pessoas no banco de dados através do repository
+	 * Salva pessoas no banco de dados através do repository.
 	 * @param pessoa recurso recuperado do corpo da requisição
 	 * @param response variavel de resposta para o http
 	 * @return retorna o conteudo do objeto em json com um created 201, 
@@ -101,4 +101,15 @@ public class PessoaResource {
 		Pessoa pessoaSalva = service.editar(codigo, pessoa);
 		return ResponseEntity.ok(pessoaSalva);
 	}	
+	
+	/**
+	 * Método que faz uma edição parcial do atributo Ativo da Pessoa
+	 * @param codigo código da pessoa, o valor será atribuido pelo @PathVariable que por sua vez recupera o valor do @PutMapping
+	 * @param ativo atributo que foi editado
+	 */
+	@PutMapping("/{codigo}/ativo") //indica o mapeamento PUT para atualizar o recurso nesse caminho
+	@ResponseStatus(HttpStatus.NO_CONTENT) //retorna o 204 porque não precisa de retorno ao editar
+	public void atualizarPropriedadeAtivo(@PathVariable Long codigo, @RequestBody Boolean ativo) {
+		service.editarPropriedadeAtivo(codigo, ativo);
+	}
 }

@@ -27,14 +27,35 @@ public class PessoaService {
 	 * @return pessoa editada
 	 */
 	public Pessoa editar(Long codigo, Pessoa pessoa) {
-		Pessoa pessoaSalva = repository.findOne(codigo);
-		
-		if(pessoaSalva == null) {
-			throw new EmptyResultDataAccessException(1);
-		}
+		Pessoa pessoaSalva = buscarPessoaPeloCodigo(codigo);
 		
 		//Propriedade do spring que aplica os dados atualizados 'pessoa' na entidade que foi editada 'pessoaSalva' ignorando o 'codigo'
 		BeanUtils.copyProperties(pessoa, pessoaSalva, "codigo");
 		return repository.save(pessoaSalva);
+	}
+	
+	/**
+	 * Método que faz uma edição parcial no atributo 'Ativo' da Pessoa 
+	 * @param codigo codigo da pessoa que será editada
+	 * @param ativo boolean que será atribuido na pessoa
+	 */
+	public void editarPropriedadeAtivo(Long codigo, Boolean ativo) {
+		Pessoa pessoaSalva = buscarPessoaPeloCodigo(codigo);
+		pessoaSalva.setAtivo(ativo);
+		repository.save(pessoaSalva);
+	}
+
+	/**
+	 * Método privado que busca uma pessoa no banco de dados pelo código
+	 * @param codigo código da pessoa
+	 * @return Pessoa buscada
+	 */
+	private Pessoa buscarPessoaPeloCodigo(Long codigo) {
+		Pessoa pessoa = repository.findOne(codigo);
+		
+		if(pessoa == null) {
+			throw new EmptyResultDataAccessException(1);
+		}
+		return pessoa;
 	}
 }
