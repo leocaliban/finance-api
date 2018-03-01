@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.leocaliban.finance.api.event.RecursoCriadoEvent;
 import com.leocaliban.finance.api.model.Categoria;
 import com.leocaliban.finance.api.repository.CategoriaRepository;
+import com.leocaliban.finance.api.service.CategoriaService;
 
 /**
  * Classe que expõe todos os recursos relacionados a Categoria (Controlador)
@@ -37,6 +39,9 @@ public class CategoriaResource {
 	
 	@Autowired
 	private ApplicationEventPublisher publisher;
+	
+	@Autowired
+	private CategoriaService service;
 	
 	/**
 	 * Busca todas as categorias do banco de dados através do repository
@@ -62,8 +67,7 @@ public class CategoriaResource {
 		//publica o evento ao ser acionado, this referencia a classe que está disparando o evento
 		publisher.publishEvent(new RecursoCriadoEvent(this, response, categoriaSalva.getCodigo()));
 		
-		return ResponseEntity.status(HttpStatus.CREATED).body(categoriaSalva);
-			
+		return ResponseEntity.status(HttpStatus.CREATED).body(categoriaSalva);	
 	}
 
 	/**
@@ -87,4 +91,16 @@ public class CategoriaResource {
 	public void remover(@PathVariable Long codigo) {
 		repository.delete(codigo);
 	}
+	
+	/**
+	 * Edita uma categoria do banco de dados pelo código através do service
+	 * @param codigo código da categoria, o valor será atribuido pelo @PathVariable que por sua vez recupera o valor do @PutMapping
+	 * @param categoria entidade Categoria recuperada da requisição
+	 * @return Categoria que foi editada
+	 */
+	@PutMapping("/{codigo}") //indica o mapeamento PUT para atualizar o recurso no caminho /categorias/{codigo} 
+	public ResponseEntity<Categoria> editar(@PathVariable Long codigo, @Valid @RequestBody Categoria categoria){
+		Categoria categoriaSalva = service.editar(codigo, categoria);
+		return ResponseEntity.ok(categoriaSalva);
+	}	
 }
