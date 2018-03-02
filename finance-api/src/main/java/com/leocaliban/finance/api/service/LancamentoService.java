@@ -21,16 +21,16 @@ public class LancamentoService {
 	private LancamentoRepository repository;
 	
 	/**
-	 * Método que recupera todos os Lançamentos do banco de dados através do repository
-	 * @return uma lista de lançamentos
+	 * Método que recupera todos os Lançamentos do banco de dados através do repository.
+	 * @return uma lista de lançamentos.
 	 */
 	public List<Lancamento> listar(){
 		return repository.findAll();
 	}
 	
 	/**
-	 * Método que busca um lançamento no banco de dados
-	 * @param codigo código identificador do lançamento
+	 * Método que busca um lançamento no banco de dados.
+	 * @param codigo código identificador do lançamento.
 	 * @return Lancamento 
 	 */
 	public Lancamento buscarPorCodigo(Long codigo) {
@@ -38,4 +38,13 @@ public class LancamentoService {
 		return lancamento;
 	}
 	
+	/**
+	 * Salva um lançamento no banco de dados.
+	 * @param lancamento Lançamento que será salvo.
+	 * @return lancamento salvo.
+	 */
+	public Lancamento salvar(Lancamento lancamento) {
+		Lancamento lancamentoSalvo = repository.save(lancamento);
+		return lancamentoSalvo;
+	}
 }

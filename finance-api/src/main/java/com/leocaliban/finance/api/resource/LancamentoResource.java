@@ -2,13 +2,21 @@ package com.leocaliban.finance.api.resource;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.leocaliban.finance.api.event.RecursoCriadoEvent;
 import com.leocaliban.finance.api.model.Lancamento;
 import com.leocaliban.finance.api.service.LancamentoService;
 
@@ -24,6 +32,9 @@ public class LancamentoResource {
 	
 	@Autowired
 	private LancamentoService service;
+	
+	@Autowired
+	private ApplicationEventPublisher publisher;
 	
 	/**
 	 * Busca todos os Lançamentos do banco de dados através do service
@@ -43,6 +54,21 @@ public class LancamentoResource {
 	public ResponseEntity<Lancamento> buscarPorCodigo(@PathVariable Long codigo){
 		Lancamento lancamento = service.buscarPorCodigo(codigo);
 		return lancamento != null ? ResponseEntity.ok(lancamento) : ResponseEntity.notFound().build();
+	}
+	
+	/**
+	 * Salva lancamentos no banco de dados através do service.
+	 * @param lancamento recurso recuperado do corpo da requisição
+	 * @param response variavel de resposta para o http
+	 * @return retorna o conteudo do objeto em json com um created 201
+	 */
+	@PostMapping //indica o mapeamento POST padrão para /lancamentos
+	public ResponseEntity<Lancamento> salvar (@Valid @RequestBody Lancamento lancamento, HttpServletResponse response){
+		Lancamento lancamentoSalvo = service.salvar(lancamento);
+		
+		//publica o evento ao ser acionado, 'this' referência a classe que está disparando o evento
+		publisher.publishEvent(new RecursoCriadoEvent(this, response, lancamentoSalvo.getCodigo()));
+		return ResponseEntity.status(HttpStatus.CREATED).body(lancamentoSalvo);
 	}
 
 }
