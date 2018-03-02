@@ -28,5 +28,14 @@ public class LancamentoService {
 		return repository.findAll();
 	}
 	
+	/**
+	 * Método que busca um lançamento no banco de dados
+	 * @param codigo código identificador do lançamento
+	 * @return Lancamento 
+	 */
+	public Lancamento buscarPorCodigo(Long codigo) {
+		Lancamento lancamento = repository.findOne(codigo);
+		return lancamento;
+	}
 	
 }
