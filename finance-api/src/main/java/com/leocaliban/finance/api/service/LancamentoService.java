@@ -6,7 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.leocaliban.finance.api.model.Lancamento;
+import com.leocaliban.finance.api.model.Pessoa;
 import com.leocaliban.finance.api.repository.LancamentoRepository;
+import com.leocaliban.finance.api.repository.PessoaRepository;
+import com.leocaliban.finance.api.service.exceptions.PessoaInexistenteOuInativaException;
 
 /**
  * Classe {@link LancamentoService} é responsável pelas regras de negócio que envolvem Lancamento
@@ -18,14 +21,17 @@ import com.leocaliban.finance.api.repository.LancamentoRepository;
 public class LancamentoService {
 
 	@Autowired 
-	private LancamentoRepository repository;
+	private PessoaRepository pessoaRepository;
+	
+	@Autowired 
+	private LancamentoRepository lancamentoRepository;
 	
 	/**
 	 * Método que recupera todos os Lançamentos do banco de dados através do repository.
 	 * @return uma lista de lançamentos.
 	 */
 	public List<Lancamento> listar(){
-		return repository.findAll();
+		return lancamentoRepository.findAll();
 	}
 	
 	/**
@@ -34,7 +40,7 @@ public class LancamentoService {
 	 * @return Lancamento 
 	 */
 	public Lancamento buscarPorCodigo(Long codigo) {
-		Lancamento lancamento = repository.findOne(codigo);
+		Lancamento lancamento = lancamentoRepository.findOne(codigo);
 		return lancamento;
 	}
 	
@@ -44,7 +50,11 @@ public class LancamentoService {
 	 * @return lancamento salvo.
 	 */
 	public Lancamento salvar(Lancamento lancamento) {
-		Lancamento lancamentoSalvo = repository.save(lancamento);
+		Pessoa pessoa = pessoaRepository.findOne(lancamento.getPessoa().getCodigo());
+		if(pessoa == null || pessoa.isInativo()) {
+			throw new PessoaInexistenteOuInativaException();
+		}
+		Lancamento lancamentoSalvo = lancamentoRepository.save(lancamento);
 		return lancamentoSalvo;
 	}
 }

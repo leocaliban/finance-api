@@ -23,6 +23,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.leocaliban.finance.api.exceptionhandler.util.Erro;
+import com.leocaliban.finance.api.service.exceptions.PessoaInexistenteOuInativaException;
 
 /**
  * Classe {@link FinanceExceptionHandler} que irá capturar exceções de respostas das entidades.
@@ -110,5 +111,21 @@ public class FinanceExceptionHandler extends ResponseEntityExceptionHandler{
 		List<Erro> erros = Arrays.asList(new Erro(mensagemUsuario, mensagemDesenvolvedor));
 		
 		return handleExceptionInternal(ex, erros, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+	}
+	
+	/**
+	 * Método que trata a exceção {@link PessoaInexistenteOuInativaException} da camada service, disparada ao tentar
+	 * salvar um lançamento relacionado com uma pessoa com status INATIVO ou ao tentar salvar com uma pessoa inexistente.
+	 * @param ex exceção
+	 * @return entidade de resposta para o usuário, 400 representando um BAD_REQUEST.
+	 */
+	@ExceptionHandler({PessoaInexistenteOuInativaException.class})
+	public ResponseEntity<Object> handlerPessoaInexistenteOuInativaException(PessoaInexistenteOuInativaException ex){
+		String mensagemUsuario = messageSource.getMessage("pessoa.inexistente-ou-inativa", null, LocaleContextHolder.getLocale());
+		System.out.println(LocaleContextHolder.getLocale());
+		String mensagemDesenvolvedor = ex.toString();
+		List<Erro> erros = Arrays.asList(new Erro(mensagemUsuario, mensagemDesenvolvedor));
+		
+		return ResponseEntity.badRequest().body(erros);	
 	}
 }

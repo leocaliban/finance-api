@@ -6,8 +6,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * Classe {@link Pessoa} que representa uma pessoa
@@ -79,6 +82,16 @@ public class Pessoa {
 	 */
 	public void setAtivo(boolean ativo) {
 		this.ativo = ativo;
+	}
+	
+	/**
+	 * Método indica se a pessoa está inativa ou não 
+	 * @return true se a pessoa está inativa e false, caso contrário.
+	 */
+	@JsonIgnore //Indica ao jackson não considerar o método como propriedade serializável.
+	@Transient //Indica ao hibernate desconsiderar o método ao salvar no banco.
+	public boolean isInativo() {
+		return !this.ativo;
 	}
 	
 	/**
