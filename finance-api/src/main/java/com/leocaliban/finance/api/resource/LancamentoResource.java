@@ -9,11 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.leocaliban.finance.api.event.RecursoCriadoEvent;
@@ -70,6 +72,16 @@ public class LancamentoResource {
 		//publica o evento ao ser acionado, 'this' referência a classe que está disparando o evento
 		publisher.publishEvent(new RecursoCriadoEvent(this, response, lancamentoSalvo.getCodigo()));
 		return ResponseEntity.status(HttpStatus.CREATED).body(lancamentoSalvo);
+	}
+	
+	/**
+	 * Deleta umlançamento do banco de dados pelo código através do service
+	 * @param codigo código do lançamento, o valor será atribuido pelo @PathVariable que por sua vez recupera o valor do @DeleteMapping
+	 */
+	@DeleteMapping("/{codigo}") //indica o mapeamento DELETE para deletar o recurso no caminho /lancamentos/{codigo} 
+	@ResponseStatus(HttpStatus.NO_CONTENT) //retorna o 204 porque não precisa de retorno ao excluir
+	public void remover(@PathVariable Long codigo) {
+		service.remover(codigo);
 	}
 
 }

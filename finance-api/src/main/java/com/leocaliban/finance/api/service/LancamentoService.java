@@ -59,4 +59,12 @@ public class LancamentoService {
 		Lancamento lancamentoSalvo = lancamentoRepository.save(lancamento);
 		return lancamentoSalvo;
 	}
+	
+	/**
+	 * Remove um lançamento no bando de dados através do repository.
+	 * @param codigo Código do lançamento que será excluído.
+	 */
+	public void remover(Long codigo) {
+		lancamentoRepository.delete(codigo);
+	}
 }
