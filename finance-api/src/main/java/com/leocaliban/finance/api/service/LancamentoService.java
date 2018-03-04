@@ -9,6 +9,7 @@ import com.leocaliban.finance.api.model.Lancamento;
 import com.leocaliban.finance.api.model.Pessoa;
 import com.leocaliban.finance.api.repository.LancamentoRepository;
 import com.leocaliban.finance.api.repository.PessoaRepository;
+import com.leocaliban.finance.api.repository.filter.LancamentoFilter;
 import com.leocaliban.finance.api.service.exceptions.PessoaInexistenteOuInativaException;
 
 /**
@@ -25,13 +26,14 @@ public class LancamentoService {
 	
 	@Autowired 
 	private LancamentoRepository lancamentoRepository;
-	
+
 	/**
-	 * Método que recupera todos os Lançamentos do banco de dados através do repository.
+	 * Método que recupera por filtragem todos os Lançamentos do banco de dados através do repository.
+	 * @param filter filtro da listagem de lançamentos.
 	 * @return uma lista de lançamentos.
 	 */
-	public List<Lancamento> listar(){
-		return lancamentoRepository.findAll();
+	public List<Lancamento> listar(LancamentoFilter filter){
+		return lancamentoRepository.filtrar(filter);
 	}
 	
 	/**

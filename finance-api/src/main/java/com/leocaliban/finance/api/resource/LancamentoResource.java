@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.leocaliban.finance.api.event.RecursoCriadoEvent;
 import com.leocaliban.finance.api.model.Lancamento;
+import com.leocaliban.finance.api.repository.filter.LancamentoFilter;
 import com.leocaliban.finance.api.service.LancamentoService;
 
 /**
@@ -41,8 +42,8 @@ public class LancamentoResource {
 	 * @return lista de lancamentos
 	 */
 	@GetMapping //indica o mapeamento GET padrão para /lancamentos (raiz)
-	public List<Lancamento> listar(){
-		return service.listar();
+	public List<Lancamento> listar(LancamentoFilter filter){
+		return service.listar(filter);
 	}
 	
 	/**

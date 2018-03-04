@@ -60,6 +60,13 @@
 			<artifactId>hibernate-java8</artifactId>
 		</dependency>
 		
+		<!-- Dependencia externa usada para criar o Metamodel 
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-jpamodelgen</artifactId>
+		</dependency>
+		-->
+		
 		<!-- Suporte do Jackson para as datas do Java 8 -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.datatype</groupId>
