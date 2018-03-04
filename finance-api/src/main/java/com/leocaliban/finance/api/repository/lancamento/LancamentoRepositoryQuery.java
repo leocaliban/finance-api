@@ -1,6 +1,7 @@
 package com.leocaliban.finance.api.repository.lancamento;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import com.leocaliban.finance.api.model.Lancamento;
 import com.leocaliban.finance.api.repository.filter.LancamentoFilter;
@@ -16,8 +17,9 @@ public interface LancamentoRepositoryQuery {
 	
 	/**
 	 * Método que implementa o filtro para a busca de lançamentos.
+	 * E define a páginação de lançamentos.
 	 * @param filter classe que traz os parametros que serão filtrados.
-	 * @return Lista de lançamentos.
+	 * @return Páginas de lançamentos.
 	 */
-	public List<Lancamento> filtrar(LancamentoFilter filter);
+	public Page<Lancamento> filtrar(LancamentoFilter filter, Pageable pageable);
 }

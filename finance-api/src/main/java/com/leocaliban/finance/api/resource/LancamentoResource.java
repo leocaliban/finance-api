@@ -1,12 +1,12 @@
 package com.leocaliban.finance.api.resource;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -39,13 +39,15 @@ public class LancamentoResource {
 	@Autowired
 	private ApplicationEventPublisher publisher;
 	
+
 	/**
 	 * Busca todos os Lançamentos do banco de dados através do service
-	 * @return lista de lancamentos
+	 * @param pageable paginação da listagem de lançamentos
+	 * @return paginas de lancamentos
 	 */
 	@GetMapping //indica o mapeamento GET padrão para /lancamentos (raiz)
-	public List<Lancamento> listar(LancamentoFilter filter){
-		return service.listar(filter);
+	public Page<Lancamento> listar(LancamentoFilter filter, Pageable pageable){
+		return service.listar(filter, pageable);
 	}
 	
 	/**

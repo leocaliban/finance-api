@@ -1,8 +1,8 @@
 package com.leocaliban.finance.api.service;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.leocaliban.finance.api.model.Lancamento;
@@ -30,10 +30,10 @@ public class LancamentoService {
 	/**
 	 * Método que recupera por filtragem todos os Lançamentos do banco de dados através do repository.
 	 * @param filter filtro da listagem de lançamentos.
-	 * @return uma lista de lançamentos.
+	 * @return páginas de lançamentos.
 	 */
-	public List<Lancamento> listar(LancamentoFilter filter){
-		return lancamentoRepository.filtrar(filter);
+	public Page<Lancamento> listar(LancamentoFilter filter, Pageable pageable){
+		return lancamentoRepository.filtrar(filter, pageable);
 	}
 	
 	/**
