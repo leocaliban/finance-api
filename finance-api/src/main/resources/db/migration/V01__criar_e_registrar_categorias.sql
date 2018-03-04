@@ -1,10 +1,9 @@
-create table categoria(
-	codigo bigint(20) primary key auto_increment,
-    nome varchar(50) not null
-) 
-engine=InnoDB default CHARSET=utf8;
+CREATE TABLE categoria(
+	codigo BIGINT(20) PRIMARY KEY AUTO_INCREMENT,
+    nome VARCHAR(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-insert into categoria 
+INSERT INTO categoria 
 (nome) values 
 ('Lazer'),
 ('Alimentação'),

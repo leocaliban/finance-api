@@ -21,7 +21,7 @@ INSERT INTO lancamento
 ('DMAE', '2017-06-10', null, 200.30, null, 'DESPESA', 3, 5),
 ('Extra', '2017-03-10', '2017-03-10', 1010.32, null, 'RECEITA', 4, 6),
 ('Bahamas', '2017-06-10', null, 500, null, 'RECEITA', 1, 7),
-('Top Club', '2017-03-10', '2017-03-10', 400.32, null, 'DESPESA', 4, 8),
+('Top Club', '2017-03-10', '2017-02-10', 400.32, null, 'DESPESA', 4, 8),
 ('Despachante', '2017-06-10', null, 123.64, 'Multas', 'DESPESA', 3, 9),
 ('Pneus', '2017-04-10', '2017-04-10', 665.33, null, 'RECEITA', 5, 10),
 ('Café', '2017-06-10', null, 8.32, null, 'DESPESA', 1, 5),
