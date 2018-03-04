@@ -34,14 +34,16 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 			.withClient("angular") //nick cliente que consumirá a api
 			.secret("angular") //senha do cliente
 			.scopes("read", "write") //escopo de limitação de acesso
-			.authorizedGrantTypes("password") //permite a aplicação o acesso ao password do usuário.
-			.accessTokenValiditySeconds(1800); //duração de atividade do token
+			.authorizedGrantTypes("password", "refresh_token")
+			.accessTokenValiditySeconds(20) //duração de atividade do token de acesso
+			.refreshTokenValiditySeconds(3600 * 24); //duração de atividade do refresh token
 	}
 	
 	@Override
 	public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
 		endpoints.tokenStore(tokenStore())
 			.accessTokenConverter(accessTokenConverter())
+			.reuseRefreshTokens(false) //ao solicitar um token pelo refresh, o token não será reutilizado
 			.authenticationManager(authenticationManager);
 	}
 	
