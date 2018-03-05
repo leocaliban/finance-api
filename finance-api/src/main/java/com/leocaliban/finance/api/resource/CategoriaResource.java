@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -44,25 +45,26 @@ public class CategoriaResource {
 	private CategoriaService service;
 	
 	/**
-	 * Busca todas as categorias do banco de dados através do repository
+	 * Busca todas as categorias do banco de dados através do service
 	 * @return lista de categorias
 	 */
 	@GetMapping //indica o mapeamento GET padrão para /categorias (raiz)
+	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_CATEGORIA') AND #oauth2.hasScope('read')")
 	public List<Categoria> listar(){
-		return repository.findAll();
+		return service.listarTodos();
 	}
 	
-
 	/**
-	 * Salva categorias no banco de dados através do repository
+	 * Salva categorias no banco de dados através do service
 	 * @param categoria recurso recuperado do corpo da requisição
 	 * @param response variavel de resposta para o http
 	 * @return retorna o conteudo do objeto em json com um created 201, 
 	 * substituindo a anotação @ResponseStatus que só retorna o status
 	 */
 	@PostMapping //indica o mapeamento POST padrão para /categorias
+	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_CATEGORIA') AND #oauth2.hasScope('write')")
 	public ResponseEntity<Categoria> salvar(@Valid @RequestBody Categoria categoria, HttpServletResponse response) {
-		Categoria categoriaSalva = repository.save(categoria);
+		Categoria categoriaSalva = service.salvar(categoria);
 		
 		//publica o evento ao ser acionado, this referencia a classe que está disparando o evento
 		publisher.publishEvent(new RecursoCriadoEvent(this, response, categoriaSalva.getCodigo()));
@@ -76,6 +78,7 @@ public class CategoriaResource {
 	 * @return Categoria
 	 */
 	@GetMapping("/{codigo}") //indica o mapeamento GET para o caminho /categorias/{codigo} 
+	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_CATEGORIA') AND #oauth2.hasScope('read')")
 	public ResponseEntity<Categoria> buscarPorCodigo(@PathVariable Long codigo) {
 		Categoria categoriaRecuperada = repository.findOne(codigo);
 		

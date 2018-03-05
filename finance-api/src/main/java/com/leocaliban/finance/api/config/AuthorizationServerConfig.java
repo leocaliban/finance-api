@@ -35,7 +35,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 			.secret("angular") //senha do cliente
 			.scopes("read", "write") //escopo de limitação de acesso
 			.authorizedGrantTypes("password", "refresh_token")
-			.accessTokenValiditySeconds(20) //duração de atividade do token de acesso
+			.accessTokenValiditySeconds(1800) //duração de atividade do token de acesso
 			.refreshTokenValiditySeconds(3600 * 24); //duração de atividade do refresh token
 	}
 	
