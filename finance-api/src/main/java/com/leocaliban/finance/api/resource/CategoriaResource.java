@@ -49,7 +49,7 @@ public class CategoriaResource {
 	 * @return lista de categorias
 	 */
 	@GetMapping //indica o mapeamento GET padrão para /categorias (raiz)
-	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_CATEGORIA') AND #oauth2.hasScope('read')")
+	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_CATEGORIA') and #oauth2.hasScope('read')")
 	public List<Categoria> listar(){
 		return service.listarTodos();
 	}
@@ -62,7 +62,7 @@ public class CategoriaResource {
 	 * substituindo a anotação @ResponseStatus que só retorna o status
 	 */
 	@PostMapping //indica o mapeamento POST padrão para /categorias
-	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_CATEGORIA') AND #oauth2.hasScope('write')")
+	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_CATEGORIA') and #oauth2.hasScope('write')")
 	public ResponseEntity<Categoria> salvar(@Valid @RequestBody Categoria categoria, HttpServletResponse response) {
 		Categoria categoriaSalva = service.salvar(categoria);
 		
@@ -78,7 +78,7 @@ public class CategoriaResource {
 	 * @return Categoria
 	 */
 	@GetMapping("/{codigo}") //indica o mapeamento GET para o caminho /categorias/{codigo} 
-	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_CATEGORIA') AND #oauth2.hasScope('read')")
+	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_CATEGORIA') and #oauth2.hasScope('read')")
 	public ResponseEntity<Categoria> buscarPorCodigo(@PathVariable Long codigo) {
 		Categoria categoriaRecuperada = repository.findOne(codigo);
 		

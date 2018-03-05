@@ -49,7 +49,7 @@ public class PessoaResource {
 	 * @return lista de pessoas
 	 */
 	@GetMapping //indica o mapeamento GET padrão para /pessoas (raiz)
-	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_PESSOA') AND #oauth2.hasScope('read')")
+	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_PESSOA') and #oauth2.hasScope('read')")
 	public List<Pessoa> listar(){
 		return repository.findAll();
 	}
@@ -62,7 +62,7 @@ public class PessoaResource {
 	 * substituindo a anotação @ResponseStatus que só retorna o status
 	 */
 	@PostMapping //indica o mapeamento POST padrão para /pessoas
-	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_PESSOA') AND #oauth2.hasScope('write')")
+	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_PESSOA') and #oauth2.hasScope('write')")
 	public ResponseEntity<Pessoa> salvar(@Valid @RequestBody Pessoa pessoa, HttpServletResponse response){
 		Pessoa pessoaSalva = repository.save(pessoa);
 
@@ -78,7 +78,7 @@ public class PessoaResource {
 	 * @return Pessoa
 	 */
 	@GetMapping("/{codigo}")
-	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_PESSOA') AND #oauth2.hasScope('read')")
+	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_PESSOA') and #oauth2.hasScope('read')")
 	public ResponseEntity<Pessoa> buscarPorCodigo(@PathVariable Long codigo) {
 		Pessoa pessoa = repository.findOne(codigo);
 		return pessoa != null ? ResponseEntity.ok(pessoa) : ResponseEntity.notFound().build();
@@ -90,7 +90,7 @@ public class PessoaResource {
 	 */
 	@DeleteMapping("/{codigo}") //indica o mapeamento DELETE para deletar o recurso no caminho /pessoas/{codigo} 
 	@ResponseStatus(HttpStatus.NO_CONTENT) //retorna o 204 porque não precisa de retorno ao excluir
-	@PreAuthorize("hasAuthority('ROLE_REMOVER_PESSOA') AND #oauth2.hasScope('write')")
+	@PreAuthorize("hasAuthority('ROLE_REMOVER_PESSOA') and #oauth2.hasScope('write')")
 	public void remover(@PathVariable Long codigo) {
 		repository.delete(codigo);
 	}
@@ -102,7 +102,7 @@ public class PessoaResource {
 	 * @return Pessoa que foi editada
 	 */
 	@PutMapping("/{codigo}") //indica o mapeamento PUT para atualizar o recurso no caminho /pessoas/{codigo} 
-	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_PESSOA') AND #oauth2.hasScope('write')")
+	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_PESSOA') and #oauth2.hasScope('write')")
 	public ResponseEntity<Pessoa> editar(@PathVariable Long codigo, @Valid @RequestBody Pessoa pessoa){
 		Pessoa pessoaSalva = service.editar(codigo, pessoa);
 		return ResponseEntity.ok(pessoaSalva);
@@ -115,7 +115,7 @@ public class PessoaResource {
 	 */
 	@PutMapping("/{codigo}/ativo") //indica o mapeamento PUT para atualizar o recurso nesse caminho
 	@ResponseStatus(HttpStatus.NO_CONTENT) //retorna o 204 porque não precisa de retorno ao editar
-	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_PESSOA') AND #oauth2.hasScope('write')")
+	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_PESSOA') and #oauth2.hasScope('write')")
 	public void atualizarPropriedadeAtivo(@PathVariable Long codigo, @RequestBody Boolean ativo) {
 		service.editarPropriedadeAtivo(codigo, ativo);
 	}

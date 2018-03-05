@@ -10,6 +10,7 @@ import com.leocaliban.finance.api.model.Pessoa;
 import com.leocaliban.finance.api.repository.LancamentoRepository;
 import com.leocaliban.finance.api.repository.PessoaRepository;
 import com.leocaliban.finance.api.repository.filter.LancamentoFilter;
+import com.leocaliban.finance.api.repository.projection.ResumoLancamento;
 import com.leocaliban.finance.api.service.exceptions.PessoaInexistenteOuInativaException;
 
 /**
@@ -34,6 +35,16 @@ public class LancamentoService {
 	 */
 	public Page<Lancamento> listar(LancamentoFilter filter, Pageable pageable){
 		return lancamentoRepository.filtrar(filter, pageable);
+	}
+	
+	/**
+	 * Busca os Lançamentos do banco de dados de forma resumida.
+	 * @param filter LancamentoFilter que contém os atributos que serão filtrados
+	 * @param pageable paginação da listagem de lançamentos
+	 * @return Páginas de lançamentos resumidos.
+	 */
+	public Page<ResumoLancamento> resumirListagem(LancamentoFilter filter, Pageable pageable) {
+		return lancamentoRepository.resumir(filter, pageable);
 	}
 	
 	/**
@@ -67,4 +78,5 @@ public class LancamentoService {
 	public void remover(Long codigo) {
 		lancamentoRepository.delete(codigo);
 	}
+
 }

@@ -44,7 +44,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 			.anyRequest() //qualquer requisição
 			.authenticated() //deve estar altenticado para acessar
 			.and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-			.and().csrf(); 
+			.and().csrf().disable(); 
 	}
 	
 	@Override
