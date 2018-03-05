@@ -11,9 +11,12 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+
+import com.leocaliban.finance.api.config.property.FinanceApiProperty;
 
 /**
  * Classe {@link CorsFilter} responsável pela configuração do CORS.
@@ -25,7 +28,8 @@ import org.springframework.stereotype.Component;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class CorsFilter implements Filter {
 	
-	private String originPermitida = "http://localhost:8000";
+	@Autowired
+	private FinanceApiProperty property;
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
@@ -34,10 +38,10 @@ public class CorsFilter implements Filter {
 		HttpServletRequest requisicao = (HttpServletRequest) request;
 		HttpServletResponse resposta = (HttpServletResponse) response;
 		
-		resposta.setHeader("Access-Control-Allow-Origin", originPermitida);
+		resposta.setHeader("Access-Control-Allow-Origin", property.getOriginPermitida());
 		resposta.setHeader("Access-Control-Allow-Credentials", "true");
 		
-		if("OPTIONS".equals(requisicao.getMethod()) && originPermitida.equals(requisicao.getHeader("Origin"))) {
+		if("OPTIONS".equals(requisicao.getMethod()) && property.getOriginPermitida().equals(requisicao.getHeader("Origin"))) {
 			resposta.setHeader("Access-Control-Allow-Methods", "POST, GET, DELETE, PUT, OPTIONS");
 			resposta.setHeader("Access-Control-Allow-Headers", "Authorization, Content-Type, Accept");
 			resposta.setHeader("Access-Control-Max-Age", "3600");
