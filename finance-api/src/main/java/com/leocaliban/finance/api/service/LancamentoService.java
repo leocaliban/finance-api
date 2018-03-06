@@ -1,5 +1,6 @@
 package com.leocaliban.finance.api.service;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -54,6 +55,9 @@ public class LancamentoService {
 	 */
 	public Lancamento buscarPorCodigo(Long codigo) {
 		Lancamento lancamento = lancamentoRepository.findOne(codigo);
+		if (lancamento == null) {
+			throw new IllegalArgumentException();
+		}
 		return lancamento;
 	}
 	
@@ -72,11 +76,42 @@ public class LancamentoService {
 	}
 	
 	/**
-	 * Remove um lançamento no bando de dados através do repository.
+	 * Método que edita um lançamento
+	 * @param codigo código do lançamento
+	 * @param lancamento lançamento editado
+	 * @return lançamento salvo
+	 */
+	public Lancamento editar(Long codigo, Lancamento lancamento) {
+		Lancamento lancamentoSalvo = buscarPorCodigo(codigo);
+		if (!lancamento.getPessoa().equals(lancamentoSalvo.getPessoa())) {
+			validarPessoa(lancamento);
+		}
+
+		BeanUtils.copyProperties(lancamento, lancamentoSalvo, "codigo");
+
+		return lancamentoRepository.save(lancamentoSalvo);
+	}
+	
+	/**
+	 * Remove um lançamento no banco de dados através do repository.
 	 * @param codigo Código do lançamento que será excluído.
 	 */
 	public void remover(Long codigo) {
 		lancamentoRepository.delete(codigo);
 	}
+	
+	/**
+	 * Método verifica se a pessoa que será salva é null ou inativa
+	 * @param lancamento lançamento da pessoa
+	 */
+	private void validarPessoa(Lancamento lancamento) {
+		Pessoa pessoa = null;
+		if (lancamento.getPessoa().getCodigo() != null) {
+			pessoa = pessoaRepository.findOne(lancamento.getPessoa().getCodigo());
+		}
 
+		if (pessoa == null || pessoa.isInativo()) {
+			throw new PessoaInexistenteOuInativaException();
+		}
+	}
 }

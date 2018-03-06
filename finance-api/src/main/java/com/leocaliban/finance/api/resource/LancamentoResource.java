@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -72,8 +73,13 @@ public class LancamentoResource {
 	@GetMapping("/{codigo}")
 	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_LANCAMENTO') and #oauth2.hasScope('read')")
 	public ResponseEntity<Lancamento> buscarPorCodigo(@PathVariable Long codigo){
-		Lancamento lancamento = service.buscarPorCodigo(codigo);
-		return lancamento != null ? ResponseEntity.ok(lancamento) : ResponseEntity.notFound().build();
+		try {
+			Lancamento lancamento = service.buscarPorCodigo(codigo);
+			return lancamento != null ? ResponseEntity.ok(lancamento) : ResponseEntity.notFound().build();
+		}
+		catch (IllegalArgumentException e) {
+			return ResponseEntity.notFound().build();
+		}
 	}
 	
 	/**
@@ -93,7 +99,25 @@ public class LancamentoResource {
 	}
 	
 	/**
-	 * Deleta umlançamento do banco de dados pelo código através do service
+	 * Edita um lançamento do banco de dados
+	 * @param codigo código da requisição
+	 * @param lancamento recurso recuperado do corpo da requisição
+	 * @return retorna o conteudo do objeto em json com um created 201
+	 */
+	@PutMapping("/{codigo}")
+	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_LANCAMENTO')")
+	public ResponseEntity<Lancamento> editar(@PathVariable Long codigo, @Valid @RequestBody Lancamento lancamento) {
+		try {
+			Lancamento lancamentoSalvo = service.editar(codigo, lancamento);
+			return ResponseEntity.ok(lancamentoSalvo);
+		} 
+		catch (IllegalArgumentException e) {
+			return ResponseEntity.notFound().build();
+		}
+	}
+	
+	/**
+	 * Deleta um lançamento do banco de dados pelo código através do service
 	 * @param codigo código do lançamento, o valor será atribuido pelo @PathVariable que por sua vez recupera o valor do @DeleteMapping
 	 */
 	@DeleteMapping("/{codigo}") //indica o mapeamento DELETE para deletar o recurso no caminho /lancamentos/{codigo} 
