@@ -3,6 +3,8 @@ package com.leocaliban.finance.api.service;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.leocaliban.finance.api.model.Pessoa;
@@ -19,6 +21,16 @@ public class PessoaService {
 
 	@Autowired
 	private PessoaRepository repository;
+	
+	/**
+	 * Método que recupera todas as pessoas do banco de dados através do repository.
+	 * @param nome nome da pessoa.
+	 * @param pageable paginação.
+	 * @return página de pessoas.
+	 */
+	public Page<Pessoa> listar(String nome, Pageable pageable){
+		return repository.findByNomeContaining(nome, pageable);
+	}
 	
 	/**
 	 * Edita uma pessoa do banco de dados pelo código através do repository
