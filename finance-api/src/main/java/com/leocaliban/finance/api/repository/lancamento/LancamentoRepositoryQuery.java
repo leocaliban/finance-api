@@ -1,8 +1,12 @@
 package com.leocaliban.finance.api.repository.lancamento;
 
+import java.time.LocalDate;
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import com.leocaliban.finance.api.dto.LancamentoEstatisticaCategoriaDTO;
 import com.leocaliban.finance.api.model.Lancamento;
 import com.leocaliban.finance.api.repository.filter.LancamentoFilter;
 import com.leocaliban.finance.api.repository.projection.ResumoLancamento;
@@ -32,4 +36,6 @@ public interface LancamentoRepositoryQuery {
 	 * @return Páginas de lançamentos resumidos.
 	 */
 	public Page<ResumoLancamento> resumir(LancamentoFilter filter, Pageable pageable);
+	
+	public List<LancamentoEstatisticaCategoriaDTO>porCategoria(LocalDate mesReferencia);
 }
