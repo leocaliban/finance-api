@@ -1,5 +1,7 @@
 package com.leocaliban.finance.api.resource;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.leocaliban.finance.api.dto.LancamentoEstatisticaCategoriaDTO;
 import com.leocaliban.finance.api.event.RecursoCriadoEvent;
 import com.leocaliban.finance.api.model.Lancamento;
 import com.leocaliban.finance.api.repository.filter.LancamentoFilter;
@@ -80,6 +83,12 @@ public class LancamentoResource {
 		catch (IllegalArgumentException e) {
 			return ResponseEntity.notFound().build();
 		}
+	}
+	
+	@GetMapping("/estatistica/por-categoria")
+	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_LANCAMENTO') and #oauth2.hasScope('read')")
+	public List<LancamentoEstatisticaCategoriaDTO> buscarPorCategoria(){
+		return this.service.buscarPorCategoria();
 	}
 	
 	/**

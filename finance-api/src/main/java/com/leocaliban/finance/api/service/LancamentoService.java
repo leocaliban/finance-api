@@ -1,11 +1,15 @@
 package com.leocaliban.finance.api.service;
 
+import java.time.LocalDate;
+import java.util.List;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.leocaliban.finance.api.dto.LancamentoEstatisticaCategoriaDTO;
 import com.leocaliban.finance.api.model.Lancamento;
 import com.leocaliban.finance.api.model.Pessoa;
 import com.leocaliban.finance.api.repository.LancamentoRepository;
@@ -59,6 +63,10 @@ public class LancamentoService {
 			throw new IllegalArgumentException();
 		}
 		return lancamento;
+	}
+	
+	public List<LancamentoEstatisticaCategoriaDTO> buscarPorCategoria(){
+		return this.lancamentoRepository.porCategoria(LocalDate.now());
 	}
 	
 	/**
