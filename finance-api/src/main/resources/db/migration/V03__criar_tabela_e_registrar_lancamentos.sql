@@ -25,7 +25,7 @@ INSERT INTO lancamento
 ('Impostos', '2018-04-10', null, 123.64, 'Multas', 'DESPESA', 3, 9),
 ('Multa', '2018-04-10', null, 665.33, null, 'DESPESA', 5, 10),
 ('Padaria', '2018-02-28', null, 8.32, null, 'DESPESA', 1, 5),
-('Papelaria', '2018-0210', '2018-04-10', 2100.32, null, 'DESPESA', 5, 4),
+('Papelaria', '2018-02-10', '2018-04-10', 2100.32, null, 'DESPESA', 5, 4),
 ('Almoço', '2018-03-09', null, 1040.32, null, 'DESPESA', 4, 3),
 ('Café', '2018-02-20', '2018-02-18', 4.32, null, 'DESPESA', 4, 2),
 ('Lanche', '2018-04-10', null, 10.20, null, 'DESPESA', 4, 1);
