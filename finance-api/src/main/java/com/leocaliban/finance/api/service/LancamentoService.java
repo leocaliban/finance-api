@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.leocaliban.finance.api.dto.LancamentoEstatisticaCategoriaDTO;
+import com.leocaliban.finance.api.dto.LancamentoEstatisticaDiariaDTO;
 import com.leocaliban.finance.api.model.Lancamento;
 import com.leocaliban.finance.api.model.Pessoa;
 import com.leocaliban.finance.api.repository.LancamentoRepository;
@@ -69,6 +70,10 @@ public class LancamentoService {
 		return this.lancamentoRepository.porCategoria(LocalDate.now());
 	}
 	
+	public List<LancamentoEstatisticaDiariaDTO> buscarPorDia() {
+		return this.lancamentoRepository.porDia(LocalDate.now());
+	}
+	
 	/**
 	 * Salva um lançamento no banco de dados.
 	 * @param lancamento Lançamento que será salvo.
@@ -122,4 +127,6 @@ public class LancamentoService {
 			throw new PessoaInexistenteOuInativaException();
 		}
 	}
+
+	
 }
