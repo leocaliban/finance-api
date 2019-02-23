@@ -72,6 +72,27 @@
 			<line>
 				<reportElement x="0" y="24" width="555" height="1" uuid="273f615a-da4d-47c1-9801-e47ab5375c40"/>
 			</line>
+			<textField>
+				<reportElement x="1" y="1" width="79" height="23" uuid="d968d529-af88-4e9c-bff3-d04cd4c893b0"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tipo}.getDescricao()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="80" y="0" width="400" height="25" uuid="b195564d-33ef-4b01-b4c3-acb74e9cb644"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{pessoa}.getNome()]]></textFieldExpression>
+			</textField>
+			<textField pattern="¤#,##0.00;¤-#,##0.00">
+				<reportElement x="481" y="0" width="73" height="24" uuid="58c8abaf-ed18-4787-860b-71f0d745028e"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<paragraph leftIndent="0" rightIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{total}]]></textFieldExpression>
+			</textField>
 		</band>
 	</detail>
 	<pageFooter>

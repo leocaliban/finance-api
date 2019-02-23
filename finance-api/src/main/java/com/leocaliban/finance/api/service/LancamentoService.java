@@ -25,7 +25,6 @@ import com.leocaliban.finance.api.repository.filter.LancamentoFilter;
 import com.leocaliban.finance.api.repository.projection.ResumoLancamento;
 import com.leocaliban.finance.api.service.exceptions.PessoaInexistenteOuInativaException;
 
-import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -86,18 +85,19 @@ public class LancamentoService {
 		return this.lancamentoRepository.porDia(LocalDate.now());
 	}
 	
-	public byte[] relatorioPorPessoa(LocalDate inicio, LocalDate fim) throws JRException {
+	public List<LancamentoEstatisticaPessoaDTO> buscarPorPessoa(LocalDate inicio, LocalDate fim) {
+		return this.lancamentoRepository.porPessoa(inicio, fim);
+	}
+	
+	public byte[] relatorioPorPessoa(LocalDate inicio, LocalDate fim) throws Exception {
 		List<LancamentoEstatisticaPessoaDTO> dados = lancamentoRepository.porPessoa(inicio, fim);
-		
 		Map<String, Object> parametros = new HashMap<>();
 		parametros.put("DT_INICIO", Date.valueOf(inicio));
 		parametros.put("DT_FIM", Date.valueOf(fim));
 		parametros.put("REPORT_LOCALE", new Locale("pt", "BR"));
 		
 		InputStream inputStream = this.getClass().getResourceAsStream("/relatorios/lancamentos-por-pessoa.jasper");
-		
 		JasperPrint jasperPrint = JasperFillManager.fillReport(inputStream, parametros, new JRBeanCollectionDataSource(dados));
-		
 		return JasperExportManager.exportReportToPdf(jasperPrint);
 	}
 	
