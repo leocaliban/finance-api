@@ -1,7 +1,12 @@
 package com.leocaliban.finance.api.service;
 
+import java.io.InputStream;
+import java.sql.Date;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import com.leocaliban.finance.api.dto.LancamentoEstatisticaCategoriaDTO;
 import com.leocaliban.finance.api.dto.LancamentoEstatisticaDiariaDTO;
+import com.leocaliban.finance.api.dto.LancamentoEstatisticaPessoaDTO;
 import com.leocaliban.finance.api.model.Lancamento;
 import com.leocaliban.finance.api.model.Pessoa;
 import com.leocaliban.finance.api.repository.LancamentoRepository;
@@ -18,6 +24,12 @@ import com.leocaliban.finance.api.repository.PessoaRepository;
 import com.leocaliban.finance.api.repository.filter.LancamentoFilter;
 import com.leocaliban.finance.api.repository.projection.ResumoLancamento;
 import com.leocaliban.finance.api.service.exceptions.PessoaInexistenteOuInativaException;
+
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 /**
  * Classe {@link LancamentoService} é responsável pelas regras de negócio que envolvem Lancamento
@@ -72,6 +84,21 @@ public class LancamentoService {
 	
 	public List<LancamentoEstatisticaDiariaDTO> buscarPorDia() {
 		return this.lancamentoRepository.porDia(LocalDate.now());
+	}
+	
+	public byte[] relatorioPorPessoa(LocalDate inicio, LocalDate fim) throws JRException {
+		List<LancamentoEstatisticaPessoaDTO> dados = lancamentoRepository.porPessoa(inicio, fim);
+		
+		Map<String, Object> parametros = new HashMap<>();
+		parametros.put("DT_INICIO", Date.valueOf(inicio));
+		parametros.put("DT_FIM", Date.valueOf(fim));
+		parametros.put("REPORT_LOCALE", new Locale("pt", "BR"));
+		
+		InputStream inputStream = this.getClass().getResourceAsStream("/relatorios/lancamentos-por-pessoa.jasper");
+		
+		JasperPrint jasperPrint = JasperFillManager.fillReport(inputStream, parametros, new JRBeanCollectionDataSource(dados));
+		
+		return JasperExportManager.exportReportToPdf(jasperPrint);
 	}
 	
 	/**
