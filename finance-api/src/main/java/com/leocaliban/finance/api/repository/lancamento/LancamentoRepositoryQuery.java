@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 
 import com.leocaliban.finance.api.dto.LancamentoEstatisticaCategoriaDTO;
 import com.leocaliban.finance.api.dto.LancamentoEstatisticaDiariaDTO;
+import com.leocaliban.finance.api.dto.LancamentoEstatisticaPessoaDTO;
 import com.leocaliban.finance.api.model.Lancamento;
 import com.leocaliban.finance.api.repository.filter.LancamentoFilter;
 import com.leocaliban.finance.api.repository.projection.ResumoLancamento;
@@ -40,4 +41,6 @@ public interface LancamentoRepositoryQuery {
 	
 	public List<LancamentoEstatisticaCategoriaDTO>porCategoria(LocalDate mesReferencia);
 	public List<LancamentoEstatisticaDiariaDTO>porDia(LocalDate mesReferencia);
+	public List<LancamentoEstatisticaPessoaDTO>porPessoa(LocalDate inicio, LocalDate fim);
+	
 }

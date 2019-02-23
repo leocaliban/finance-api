@@ -19,6 +19,7 @@ import org.springframework.util.StringUtils;
 
 import com.leocaliban.finance.api.dto.LancamentoEstatisticaCategoriaDTO;
 import com.leocaliban.finance.api.dto.LancamentoEstatisticaDiariaDTO;
+import com.leocaliban.finance.api.dto.LancamentoEstatisticaPessoaDTO;
 import com.leocaliban.finance.api.model.Categoria_;
 import com.leocaliban.finance.api.model.Lancamento;
 import com.leocaliban.finance.api.model.Lancamento_;
@@ -192,6 +193,28 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryQuery {
 		criteria.groupBy(root.get(Lancamento_.tipo),root.get(Lancamento_.dataVencimento));
 
 		TypedQuery<LancamentoEstatisticaDiariaDTO> typedQuery = manager.createQuery(criteria);
+		return typedQuery.getResultList();
+	}
+	
+	@Override
+	public List<LancamentoEstatisticaPessoaDTO> porPessoa(LocalDate inicio, LocalDate fim) {
+		CriteriaBuilder builder = manager.getCriteriaBuilder();
+		CriteriaQuery<LancamentoEstatisticaPessoaDTO> criteria = builder
+				.createQuery(LancamentoEstatisticaPessoaDTO.class);
+
+		Root<Lancamento> root = criteria.from(Lancamento.class);
+
+		criteria.select(builder.construct(LancamentoEstatisticaPessoaDTO.class, 
+				root.get(Lancamento_.tipo),
+				root.get(Lancamento_.pessoa),
+				builder.sum(root.get(Lancamento_.valor))));
+
+		criteria.where(builder.greaterThanOrEqualTo(root.get(Lancamento_.dataVencimento), inicio),
+				builder.lessThanOrEqualTo(root.get(Lancamento_.dataVencimento), fim));
+
+		criteria.groupBy(root.get(Lancamento_.tipo),root.get(Lancamento_.pessoa));
+
+		TypedQuery<LancamentoEstatisticaPessoaDTO> typedQuery = manager.createQuery(criteria);
 		return typedQuery.getResultList();
 	}
 
