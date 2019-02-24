@@ -1,6 +1,8 @@
 package com.leocaliban.finance.api.mail;
 
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
@@ -9,20 +11,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
 @Component
 public class Mailer {
 
 	@Autowired
 	private JavaMailSender mailSender;
-	
-	// Evento disparado quando a aplicação está pronta para testar o envio de e-mail
-//	@EventListener
-//	public void teste(ApplicationReadyEvent event) {
-//		this.enviarEmail("financeapi2019@gmail.com", 
-//		Arrays.asList("nazzawd@gmail.com"), "Teste de mensagem", "Essa mensagem foi enviada pela FINANCE API");
-//	}
 
+	@Autowired
+	private TemplateEngine templateThymeleaf;
+	
 	public void enviarEmail(String remetente, List<String> destinatarios, String assunto, String mensagem) {
 
 		try {
@@ -36,5 +36,17 @@ public class Mailer {
 		} catch (MessagingException e) {
 			throw new RuntimeException("Erro no envio de e-mail", e);
 		}
+	}
+
+	public void enviarEmail(String remetente, List<String> destinatarios, String assunto, String template,
+			Map<String, Object> variaveis) {
+
+		Context context = new Context(new Locale("pt", "BR"));
+
+		variaveis.entrySet().forEach(e -> context.setVariable(e.getKey(), e.getValue()));
+
+		String mensagem = templateThymeleaf.process(template, context);
+
+		this.enviarEmail(remetente, destinatarios, assunto, mensagem);
 	}
 }
