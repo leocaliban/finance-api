@@ -46,9 +46,13 @@ public class PessoaService {
 	public Pessoa editar(Long codigo, Pessoa pessoa) {
 		Pessoa pessoaSalva = buscarPessoaPeloCodigo(codigo);
 		
-		pessoa.getContatos().forEach(c -> c.setPessoa(pessoa));
+		pessoaSalva.getContatos().clear();
+		pessoaSalva.getContatos().addAll(pessoa.getContatos());
+		
+		pessoaSalva.getContatos().forEach(c -> c.setPessoa(pessoaSalva));
+		
 		//Propriedade do spring que aplica os dados atualizados 'pessoa' na entidade que foi editada 'pessoaSalva' ignorando o 'codigo'
-		BeanUtils.copyProperties(pessoa, pessoaSalva, "codigo");
+		BeanUtils.copyProperties(pessoa, pessoaSalva, "codigo", "contatos");
 		return repository.save(pessoaSalva);
 	}
 	
