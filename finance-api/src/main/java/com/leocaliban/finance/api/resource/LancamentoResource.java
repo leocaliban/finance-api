@@ -1,5 +1,8 @@
 package com.leocaliban.finance.api.resource;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -26,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.leocaliban.finance.api.dto.LancamentoEstatisticaCategoriaDTO;
 import com.leocaliban.finance.api.dto.LancamentoEstatisticaDiariaDTO;
@@ -170,4 +174,16 @@ public class LancamentoResource {
 	public void remover(@PathVariable Long codigo) {
 		service.remover(codigo);
 	}
+	
+	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_LANCAMENTO') and #oauth2.hasScope('write')")
+	@PostMapping("/anexo")
+	public String uploadAnexo(@RequestParam("anexo") MultipartFile anexo) throws IOException {
+		OutputStream out = new FileOutputStream("C:\\Users\\leoca\\Documents\\STS\\anexo--" + anexo.getOriginalFilename());	
+		out.write(anexo.getBytes());
+		out.close();
+		return "ok";
+	}
+
+
+
 }
