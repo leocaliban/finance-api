@@ -12,15 +12,19 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.leocaliban.finance.api.dto.LancamentoEstatisticaCategoriaDTO;
 import com.leocaliban.finance.api.dto.LancamentoEstatisticaDiariaDTO;
 import com.leocaliban.finance.api.dto.LancamentoEstatisticaPessoaDTO;
+import com.leocaliban.finance.api.mail.Mailer;
 import com.leocaliban.finance.api.model.Lancamento;
 import com.leocaliban.finance.api.model.Pessoa;
+import com.leocaliban.finance.api.model.Usuario;
 import com.leocaliban.finance.api.repository.LancamentoRepository;
 import com.leocaliban.finance.api.repository.PessoaRepository;
+import com.leocaliban.finance.api.repository.UsuarioRepository;
 import com.leocaliban.finance.api.repository.filter.LancamentoFilter;
 import com.leocaliban.finance.api.repository.projection.ResumoLancamento;
 import com.leocaliban.finance.api.service.exceptions.PessoaInexistenteOuInativaException;
@@ -38,12 +42,20 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
  */
 @Service //Indica ao spring que essa classe pode ser injetada
 public class LancamentoService {
-
+	
+	private static final String DESTINATARIOS = "ROLE_PESQUISAR_LANCAMENTO";
+	
 	@Autowired 
 	private PessoaRepository pessoaRepository;
 	
 	@Autowired 
 	private LancamentoRepository lancamentoRepository;
+	
+	@Autowired
+	private UsuarioRepository usuarioRepository;
+	
+	@Autowired
+	private Mailer mailer;
 
 	/**
 	 * Método que recupera por filtragem todos os Lançamentos do banco de dados através do repository.
@@ -153,6 +165,16 @@ public class LancamentoService {
 		if (pessoa == null || pessoa.isInativo()) {
 			throw new PessoaInexistenteOuInativaException();
 		}
+	}
+	
+	 //@Scheduled(fixedDelay = 1000 * 60 * 30) 
+	//@Scheduled(cron = "0 0 6 * * *")
+	public void notificarLancamentosVencidos() {
+		List<Lancamento>vencidos = lancamentoRepository.findByDataVencimentoLessThanEqualAndDataPagamentoIsNull(LocalDate.now());
+		
+		List<Usuario>destinatarios = usuarioRepository.findByPermissoesDescricao(DESTINATARIOS);
+		
+		mailer.notificarLancamentosVencidos(vencidos, destinatarios);
 	}
 
 	
