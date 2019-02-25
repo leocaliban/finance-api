@@ -32,6 +32,11 @@ public class PessoaService {
 		return repository.findByNomeContaining(nome, pageable);
 	}
 	
+	public Pessoa salvar(Pessoa pessoa) {
+		pessoa.getContatos().forEach(c -> c.setPessoa(pessoa));
+		return repository.save(pessoa);
+	}
+	
 	/**
 	 * Edita uma pessoa do banco de dados pelo código através do repository
 	 * @param codigo da pessoa que será editada
@@ -41,6 +46,7 @@ public class PessoaService {
 	public Pessoa editar(Long codigo, Pessoa pessoa) {
 		Pessoa pessoaSalva = buscarPessoaPeloCodigo(codigo);
 		
+		pessoa.getContatos().forEach(c -> c.setPessoa(pessoa));
 		//Propriedade do spring que aplica os dados atualizados 'pessoa' na entidade que foi editada 'pessoaSalva' ignorando o 'codigo'
 		BeanUtils.copyProperties(pessoa, pessoaSalva, "codigo");
 		return repository.save(pessoaSalva);

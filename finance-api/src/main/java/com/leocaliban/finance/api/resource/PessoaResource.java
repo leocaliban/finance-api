@@ -65,7 +65,7 @@ public class PessoaResource {
 	@PostMapping //indica o mapeamento POST padrão para /pessoas
 	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_PESSOA') and #oauth2.hasScope('write')")
 	public ResponseEntity<Pessoa> salvar(@Valid @RequestBody Pessoa pessoa, HttpServletResponse response){
-		Pessoa pessoaSalva = repository.save(pessoa);
+		Pessoa pessoaSalva = service.salvar(pessoa);
 
 		//publica o evento ao ser acionado, this referencia a classe que está disparando o evento
 		publisher.publishEvent(new RecursoCriadoEvent(this, response, pessoaSalva.getCodigo()));
