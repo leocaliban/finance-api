@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.leocaliban.finance.api.dto.Anexo;
 import com.leocaliban.finance.api.dto.LancamentoEstatisticaCategoriaDTO;
 import com.leocaliban.finance.api.dto.LancamentoEstatisticaDiariaDTO;
 import com.leocaliban.finance.api.dto.LancamentoEstatisticaPessoaDTO;
@@ -39,6 +40,7 @@ import com.leocaliban.finance.api.model.Lancamento;
 import com.leocaliban.finance.api.repository.filter.LancamentoFilter;
 import com.leocaliban.finance.api.repository.projection.ResumoLancamento;
 import com.leocaliban.finance.api.service.LancamentoService;
+import com.leocaliban.finance.api.storage.S3;
 
 
 /**
@@ -56,6 +58,9 @@ public class LancamentoResource {
 	
 	@Autowired
 	private ApplicationEventPublisher publisher;
+	
+	@Autowired
+	private S3 s3;
 	
 	/**
 	 * Busca todos os Lançamentos do banco de dados através do service
@@ -177,13 +182,9 @@ public class LancamentoResource {
 	
 	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_LANCAMENTO') and #oauth2.hasScope('write')")
 	@PostMapping("/anexo")
-	public String uploadAnexo(@RequestParam("anexo") MultipartFile anexo) throws IOException {
-		OutputStream out = new FileOutputStream("C:\\Users\\leoca\\Documents\\STS\\anexo--" + anexo.getOriginalFilename());	
-		out.write(anexo.getBytes());
-		out.close();
-		return "ok";
+	public Anexo uploadAnexo(@RequestParam("anexo") MultipartFile anexo) throws IOException {
+		String nome = s3.salvarTemporariamente(anexo);
+		return new Anexo(nome, s3.configurarUrl(nome));
 	}
-
-
 
 }

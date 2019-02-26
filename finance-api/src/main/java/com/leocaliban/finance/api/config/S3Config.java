@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.BucketLifecycleConfiguration;
@@ -23,14 +24,15 @@ public class S3Config {
 	private FinanceApiProperty property;
 
 	@Bean
-	private AmazonS3 amazonS3() {
+	public AmazonS3 amazonS3() {
 		AWSCredentials credenciais = new BasicAWSCredentials(property.getS3().getAccessKeyId(),
 				property.getS3().getSecretAccessKey());
 
 		AmazonS3 amazons3 = AmazonS3ClientBuilder.standard()
-				.withCredentials(new AWSStaticCredentialsProvider(credenciais)).build();
+				.withCredentials(new AWSStaticCredentialsProvider(credenciais))
+				.withRegion(Regions.US_EAST_2).build();
 
-		if (amazons3.doesBucketExistV2(property.getS3().getBucket())) {
+		if (!amazons3.doesBucketExistV2(property.getS3().getBucket())) {
 
 			amazons3.createBucket(new CreateBucketRequest(property.getS3().getBucket()));
 
