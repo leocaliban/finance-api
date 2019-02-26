@@ -99,6 +99,7 @@ public class FinanceApiProperty {
 	public static class S3 {
 		private String accessKeyId;
 		private String secretAccessKey;
+		private String bucket = "leocaliban-finance-arquivos";
 
 		public String getAccessKeyId() {
 			return accessKeyId;
@@ -114,6 +115,14 @@ public class FinanceApiProperty {
 
 		public void setSecretAccessKey(String secretAccessKey) {
 			this.secretAccessKey = secretAccessKey;
+		}
+
+		public String getBucket() {
+			return bucket;
+		}
+
+		public void setBucket(String bucket) {
+			this.bucket = bucket;
 		}
 
 	}
