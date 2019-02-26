@@ -33,6 +33,7 @@
         <thymeleaf-extras-java8time.version>3.0.0.RELEASE</thymeleaf-extras-java8time.version>
         
         <aws-java-sdk.version>1.11.274</aws-java-sdk.version>
+
 	</properties>
 
 	<dependencies>
@@ -147,7 +148,7 @@
             <version>${jasperreports-fonts.version}</version>
         </dependency>
         
-        <!-- S3 -->
+        <!-- Amazon S3 -->
         <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-java-sdk</artifactId>
@@ -155,7 +156,6 @@
         </dependency>
         
         <!-- Thymeleaf -->
-        
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
