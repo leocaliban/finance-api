@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import com.leocaliban.finance.api.dto.LancamentoEstatisticaCategoriaDTO;
 import com.leocaliban.finance.api.dto.LancamentoEstatisticaDiariaDTO;
@@ -29,6 +30,7 @@ import com.leocaliban.finance.api.repository.UsuarioRepository;
 import com.leocaliban.finance.api.repository.filter.LancamentoFilter;
 import com.leocaliban.finance.api.repository.projection.ResumoLancamento;
 import com.leocaliban.finance.api.service.exceptions.PessoaInexistenteOuInativaException;
+import com.leocaliban.finance.api.storage.S3;
 
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -59,6 +61,9 @@ public class LancamentoService {
 	
 	@Autowired
 	private Mailer mailer;
+	
+	@Autowired
+	private S3 s3;
 
 	/**
 	 * Método que recupera por filtragem todos os Lançamentos do banco de dados através do repository.
@@ -122,9 +127,10 @@ public class LancamentoService {
 	 * @return lancamento salvo.
 	 */
 	public Lancamento salvar(Lancamento lancamento) {
-		Pessoa pessoa = pessoaRepository.findOne(lancamento.getPessoa().getCodigo());
-		if(pessoa == null || pessoa.isInativo()) {
-			throw new PessoaInexistenteOuInativaException();
+		validarPessoa(lancamento);
+		
+		if(StringUtils.hasText(lancamento.getAnexo())) {
+			s3.salvar(lancamento.getAnexo());
 		}
 		Lancamento lancamentoSalvo = lancamentoRepository.save(lancamento);
 		return lancamentoSalvo;
